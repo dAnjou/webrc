@@ -1,0 +1,14 @@
+<!doctype html>
+<title>Music</title>
+<ul>
+	{% for p in players %}
+	<li>{{ p }}</li>
+	{% endfor %}
+</ul>
+<h1><a href="{{ url_for('volume', x='+5') }}">Lauter</a></h1>
+<h1><a href="{{ url_for('volume', x='-5') }}">Leiser</a></h1>
+<h1><a href="{{ url_for('playback', x='playpause') }}">PlayPause</a></h1>
+<h1><a href="{{ url_for('playback', x='prev') }}">Prev</a></h1>
+<h1><a href="{{ url_for('playback', x='next') }}">Next</a></h1>
+<pre>{{ info }}</pre>
+
