@@ -1,4 +1,4 @@
-from bottle import Bottle, run, template, redirect
+from bottle import Bottle, run, template, redirect, abort
 import os
 import dbus
 import re
@@ -8,6 +8,29 @@ app = Bottle()
 
 org_mpris2_re = re.compile('^org\.mpris\.MediaPlayer2\.([^.]+)$')
 bus = dbus.SessionBus()
+
+MUSIC = "/home/max/Musik"
+
+@app.route("/browse/")
+@app.route("/browse/<d:path>")
+def browse(d=""):
+    folders = []
+    files = []
+    current_dir = path(MUSIC, d)
+    if not current_dir.startswith(MUSIC):
+        abort(403, "You are not allowed here!")
+    for item in os.listdir(current_dir):
+        p = os.path.join(current_dir, item)
+        if os.path.isfile(p):
+            files.append((p, item))
+        if os.path.isdir(p):
+            folders.append((p, item))
+    return template('browse', folders=folders, files=files)
+
+@app.route("/play/<f:path>")
+def play(f=None):
+    # play that shit here
+    return f
 
 @app.route("/")
 def index():
