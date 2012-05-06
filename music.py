@@ -1,15 +1,15 @@
-from flask import Flask, render_template, redirect
+from bottle import Bottle, run, template, redirect
 import os
 import dbus
 import re
 import subprocess
 
-app = Flask(__name__)
+app = Bottle()
 
 org_mpris2_re = re.compile('^org\.mpris\.MediaPlayer2\.([^.]+)$')
 bus = dbus.SessionBus()
 
-@app.route("/", methods=["GET"])
+@app.route("/")
 def index():
     players = []
     info = ""
@@ -18,7 +18,7 @@ def index():
         info = subprocess.check_output(["python", "/home/max/bin/mpris-remote"])
     except:
         pass
-    return render_template('index.html', players=players, info=info)
+    return template('index', players=players, info=info)
 
 @app.route("/volume/<x>")
 def volume(x):
@@ -36,4 +36,4 @@ def playback(x):
     return redirect("/")
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=31337)
+    run(app, reloader=True, debug=True, host="0.0.0.0", port=31337)
