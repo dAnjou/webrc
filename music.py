@@ -11,8 +11,13 @@ bus = dbus.SessionBus()
 
 @app.route("/", methods=["GET"])
 def index():
-    players = [ name for name in bus.list_names() if org_mpris2_re.match(name)]
-    info = subprocess.check_output(["python", "/home/max/bin/mpris-remote"])
+    players = []
+    info = ""
+    try:
+        players = [ name for name in bus.list_names() if org_mpris2_re.match(name)]
+        info = subprocess.check_output(["python", "/home/max/bin/mpris-remote"])
+    except:
+        pass
     return render_template('index.html', players=players, info=info)
 
 @app.route("/volume/<x>")
